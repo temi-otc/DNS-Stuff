@@ -1,6 +1,6 @@
 name: Terraform Destroy
 on:
- workflow_dispatch
+ workflow_dispatch:
 
 jobs:
  tf-destroy:

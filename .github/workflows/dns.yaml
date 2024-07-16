@@ -1,8 +1,6 @@
 name: dns
 on:
- push:
-  branches:
-      - main 
+ workflow_dispatch:
 
 jobs:
   terraform-dns:
