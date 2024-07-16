@@ -201,11 +201,11 @@ variable "VM-name4" {
 
 variable "username" {
   type = string
-  default = "__VM_ADMIN__"
+  default = "temi"
 }
 
 variable "password" {
   type = string
-  default = "__VM_PASSWORD__"
+  default = "Olanike@1973"
 }
 

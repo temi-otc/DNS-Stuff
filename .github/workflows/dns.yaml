@@ -38,13 +38,6 @@ jobs:
         - name: checkout repository
           uses: actions/checkout@v4
 
-        - name: replace token
-          uses: cschleiden/replace-tokens@v1
-          with:
-           tokenPrefix: '__'
-           tokenSuffix: '__'
-           files: '["**/*.tf"]'
-
 
         - name: setup terraform
           uses: hashicorp/setup-terraform@v3
