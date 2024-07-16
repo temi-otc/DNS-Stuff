@@ -1,0 +1,71 @@
+name: dns
+on:
+ push:
+  branches:
+      - main 
+
+jobs:
+  terraform-dns:
+    defaults:
+        run:
+          working-directory: ./Terraform
+    runs-on: ubuntu-latest
+
+    env:
+      CLOUD: "Azure"
+      VM_PASS: ${{ secrets.VM_PASSWORD}}
+      VM_ADM: ${{ vars.VM_ADMIN  }}
+      ARM_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      ARM_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+     
+
+    steps:
+        - name: Azure login
+          uses: azure/login@v2
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+            enable-AzPSSession: true 
+        
+        - name: Run Azure PowerShell inline script
+          uses: azure/powershell@v2
+          with:
+           inlineScript: |
+             Get-AzResourceGroup
+           azPSVersion: "latest"
+
+        - name: checkout repository
+          uses: actions/checkout@v4
+
+        - name: replace token
+          uses: cschleiden/replace-tokens@v1
+          with:
+           tokenPrefix: '__'
+           tokenSuffix: '__'
+           files: '["**/*.tf"]'
+
+
+        - name: setup terraform
+          uses: hashicorp/setup-terraform@v3
+
+        -  name: Terraform fmt
+           id: fmt
+           run: terraform fmt -check
+           continue-on-error: true
+        
+        - name: Terraform Init
+          id: init
+          run: terraform init
+        
+        - name: Terraform Validate
+          id: validate
+          run: terraform validate -no-color
+        
+        - name: Terraform Plan
+          id: plan
+          run: terraform plan -no-color
+        
+        - name: Terraform Apply
+          id: apply
+          run: terraform apply -auto-approve
