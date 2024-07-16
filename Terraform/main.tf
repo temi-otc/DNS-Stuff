@@ -175,7 +175,7 @@ resource "azurerm_windows_virtual_machine" "VM-hub" {
   resource_group_name = var.new_rg
   location            = var.location
   size                = "Standard_E2s_v3"
-  admin_username      = var.user-name
+  admin_username      = var.username
   admin_password      = var.password
   network_interface_ids = [
     azurerm_network_interface.vm-nic-hub.id,
@@ -243,7 +243,7 @@ resource "azurerm_windows_virtual_machine" "VM-spk-A" {
   resource_group_name = var.new_rg
   location            = var.location
   size                = "Standard_E2s_v3"
-  admin_username      = var.user-name
+  admin_username      = var.username
   admin_password      = var.password
   network_interface_ids = [
     azurerm_network_interface.vm-nic-spk-A.id,
@@ -394,7 +394,7 @@ resource "azurerm_windows_virtual_machine" "VM-Prem" {
   resource_group_name = var.new_rg
   location            = var.location
   size                = "Standard_E2s_v3"
-  admin_username      = var.user-name
+  admin_username      = var.username
   admin_password      = var.password
   network_interface_ids = [
     azurerm_network_interface.vm-nic-prem.id,
@@ -634,29 +634,29 @@ resource "azurerm_virtual_network_peering" "SPK-A-to-Hub" {
 
 
 
-resource "azurerm_virtual_network_peering" "Hub-to-SPK" {
-  name                         = "Hub-Spoke"
-  resource_group_name          = var.new_rg
-  virtual_network_name         = var.Vnet1
-  remote_virtual_network_id    = azurerm_virtual_network.Virtual-network-SPK-A.id
-  allow_virtual_network_access = true
-  allow_forwarded_traffic      = true
-  allow_gateway_transit        = true
-  use_remote_gateways          = false
-  depends_on                   = [azurerm_virtual_network.Virtual-network-SPK, azurerm_virtual_network.Virtual-network-HUB, azurerm_virtual_network_gateway.VPNG-Hub]
-}
+# resource "azurerm_virtual_network_peering" "Hub-to-SPK" {
+#   name                         = "Hub-Spoke"
+#   resource_group_name          = var.new_rg
+#   virtual_network_name         = var.Vnet1
+#   remote_virtual_network_id    = azurerm_virtual_network.Virtual-network-SPK-A.id
+#   allow_virtual_network_access = true
+#   allow_forwarded_traffic      = true
+#   allow_gateway_transit        = true
+#   use_remote_gateways          = false
+#   depends_on                   = [azurerm_virtual_network.Virtual-network-SPK, azurerm_virtual_network.Virtual-network-HUB, azurerm_virtual_network_gateway.VPNG-Hub]
+# }
 
-resource "azurerm_virtual_network_peering" "Spk-to-Hub" {
-  name                         = "Spoke-Hub"
-  resource_group_name          = var.new_rg
-  virtual_network_name         = var.Vnet2
-  remote_virtual_network_id    = azurerm_virtual_network.Virtual-network-HUB.id
-  allow_virtual_network_access = true
-  allow_forwarded_traffic      = true
-  allow_gateway_transit        = false
-  use_remote_gateways          = true
-  depends_on                   = [azurerm_virtual_network.Virtual-network-SPK, azurerm_virtual_network.Virtual-network-HUB, azurerm_virtual_network_gateway.VPNG-Hub]
-}
+# resource "azurerm_virtual_network_peering" "Spk-to-Hub" {
+#   name                         = "Spoke-Hub"
+#   resource_group_name          = var.new_rg
+#   virtual_network_name         = var.Vnet2
+#   remote_virtual_network_id    = azurerm_virtual_network.Virtual-network-HUB.id
+#   allow_virtual_network_access = true
+#   allow_forwarded_traffic      = true
+#   allow_gateway_transit        = false
+#   use_remote_gateways          = true
+#   depends_on                   = [azurerm_virtual_network.Virtual-network-SPK, azurerm_virtual_network.Virtual-network-HUB, azurerm_virtual_network_gateway.VPNG-Hub]
+# }
 
 
 ### CREATING THE SITE-TO-SITE CONNECTION FOR THE HUB GATEWAY
