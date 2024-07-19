@@ -1,5 +1,5 @@
 
-new_rg = "Hybrid"
+new_rg = "Hybrid-TF"
 
 Vnet1 = "Hub-Vnet"
 
