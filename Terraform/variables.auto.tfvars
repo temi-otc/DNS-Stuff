@@ -49,6 +49,7 @@ vm-nic1 = "VM-Hub-nic" #Example naming convention nebla-nic-controller-001
 vm-nic2 = "VM-SpkA-nic"
 # vm-nic3 = "VM-SpkB-nic"
 vm-nic4 = "VM-OnPrem-nic"
+vm-nic5 = "VM-OnPremDC-nic"
 
 address_prefixes1 = ["100.10.0.0/24"] # VM Subnet - HUB
 address_prefixes2 = ["100.10.1.0/25"] # FW Subnet - HUB
@@ -62,3 +63,4 @@ VM-name1 = "Hub-VM" #Example Naming Convention ansible-controller
 VM-name2 = "VM1-SpkA"
 # VM-name3 = "VM2-SPKB"
 VM-name4 = "VM-OnPrem"
+VM-name5 = "VM-DCPrem"

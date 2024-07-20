@@ -254,20 +254,23 @@ resource "azurerm_windows_virtual_machine" "VM-spk-A" {
     storage_account_type = "Standard_LRS"
   }
 
-  source_image_reference {
-    publisher = "microsoftwindowsdesktop"
-    offer     = "windows-11"
-    sku       = "win11-21h2-pro"
-    version   = "latest"
+   source_image_reference {
+     publisher = "MicrosoftWindowsServer"
+     offer     = "WindowsServer"
+     sku       = "2022-Datacenter"
+     version   = "latest"
   }
+}
 
   # source_image_reference {
-  #   publisher = "MicrosoftWindowsServer"
-  #   offer     = "WindowsServer"
-  #   sku       = "2016-Datacenter"
+  #   publisher = "microsoftwindowsdesktop"
+  #   offer     = "windows-11"
+  #   sku       = "win11-21h2-pro"
   #   version   = "latest"
   # }
-}
+
+  
+
 ###### CREATE VM FOR SPOKE-B-VNET
 
 # #CREATE NSG
@@ -373,6 +376,7 @@ resource "azurerm_subnet_network_security_group_association" "nsg_vm_association
   network_security_group_id = azurerm_network_security_group.nsg-Prem.id
 }
 
+
 #CREATE VM NIC-OnPrem
 resource "azurerm_network_interface" "vm-nic-prem" {
   name                = var.vm-nic4
@@ -412,6 +416,63 @@ resource "azurerm_windows_virtual_machine" "VM-Prem" {
     version   = "latest"
   }
 }
+
+
+#CREATE VM PUBLIC IP DC
+resource "azurerm_public_ip" "VMPremDC-pip" {
+  name                = "VM-pip-premDC"
+  resource_group_name = var.new_rg
+  location            = var.location
+  allocation_method   = "Static"
+}
+
+
+#CREATE VM NIC-OnPrem for Windows server DC
+
+resource "azurerm_network_interface" "vm-nic-premDC" {
+  name                = var.vm-nic5
+  location            = var.location
+  resource_group_name = var.new_rg
+
+  ip_configuration {
+    name                          = "VM-premDc-conf"
+    subnet_id                     = azurerm_subnet.VM-Subnet-Prem.id
+    private_ip_address_allocation = "Dynamic"
+    public_ip_address_id          = azurerm_public_ip.VMPremDC-pip.id
+  }
+}
+
+#CREATE VM-OnPrem DC
+
+resource "azurerm_windows_virtual_machine" "VM-PremDC" {
+  name                = var.VM-name5
+  resource_group_name = var.new_rg
+  location            = var.location
+  size                = "Standard_E2s_v3"
+  admin_username      = var.username
+  admin_password      = var.password
+  network_interface_ids = [
+    azurerm_network_interface.vm-nic-premDC.id,
+  ]
+
+  os_disk {
+    caching              = "ReadWrite"
+    storage_account_type = "Standard_LRS"
+  }
+
+  source_image_reference {
+     publisher = "MicrosoftWindowsServer"
+     offer     = "WindowsServer"
+     sku       = "2022-Datacenter"
+     version   = "latest"
+  }
+
+}
+
+
+
+
+
 
 ###### CREATING THE FIREWALL - HUB
 
@@ -525,7 +586,7 @@ resource "azurerm_virtual_network_gateway" "VPNG-Hub" {
 
   active_active = false
   enable_bgp    = false
-  sku           = "VpnGw2"
+  sku           = "VpnGw1"
 
   ip_configuration {
     name                          = "vnetGatewayConfig1"
@@ -557,7 +618,7 @@ resource "azurerm_virtual_network_gateway" "VPNG-Prem" {
 
   active_active = false
   enable_bgp    = false
-  sku           = "VpnGw2"
+  sku           = "VpnGw1"
 
   ip_configuration {
     name                          = "vnetGatewayConfig2"

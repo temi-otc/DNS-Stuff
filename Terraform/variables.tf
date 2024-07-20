@@ -159,6 +159,11 @@ variable "vm-nic4" {
   default = ""
 }
 
+variable "vm-nic5" {
+  type    = string
+  default = ""
+}
+
 ##ROUTE TABLES FOR GATEWAY AND SPOKE-VM
 
 variable "UDR-GW" {
@@ -195,6 +200,10 @@ variable "VM-name4" {
   default = ""
 }
 
+variable "VM-name5" {
+  type    = string
+  default = ""
+}
 
 
 #CREDENTIALS
